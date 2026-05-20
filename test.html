@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+  test.html — local simulation page for development.
+  Chrome won't inject our content script here (wrong URL),
+  but we can manually test background.js by loading this and
+  clicking the button to fire a message directly.
+
+  HOW TO USE:
+  1. Open chrome://extensions → find notif → click "Service Worker" link to open its console
+  2. Open this file in Chrome: File → Open File → test.html
+  3. Open DevTools on this tab (Cmd+Option+I)
+  4. Paste the test snippet from the console section below and run it
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>notif — test page</title>
+  <style>
+    body { font-family: system-ui; max-width: 500px; margin: 60px auto; padding: 0 20px; }
+    button {
+      background: #1e64dc;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 8px 4px;
+    }
+    button:hover { background: #1550b8; }
+    pre { background: #f4f4f4; padding: 16px; border-radius: 6px; font-size: 13px; }
+    .note { color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>notif test page</h1>
+  <p class="note">
+    This page simulates a poll appearing so you can test the notification
+    without being in a live class. The buttons inject a fake poll element
+    into this page's DOM — the same thing iClicker does when a real poll starts.
+  </p>
+
+  <button onclick="simulatePollStart()">▶ Simulate poll START</button>
+  <button onclick="simulatePollEnd()">■ Simulate poll END</button>
+
+  <div id="status" style="margin-top:20px; font-weight:bold;"></div>
+
+  <!-- Fake poll container — hidden by default, shown when poll "starts" -->
+  <div id="fake-poll" style="display:none; margin-top:20px; padding:20px;
+       border:2px solid #1e64dc; border-radius:8px;">
+    <div data-testid="active-question">
+      <strong>What is 2 + 2?</strong><br><br>
+      A) 3 &nbsp; B) 4 &nbsp; C) 5 &nbsp; D) 6
+    </div>
+  </div>
+
+  <hr style="margin-top:40px">
+  <h3>What's happening under the hood</h3>
+  <pre>
+// When you click "Simulate poll START":
+// 1. A div with data-testid="active-question" appears in the DOM
+// 2. Our MutationObserver in content.js would fire onDomChange()
+// 3. isPollVisible() finds the element → returns true
+// 4. chrome.runtime.sendMessage({ type: 'POLL_STARTED' }) is called
+// 5. background.js receives it → chrome.notifications.create() fires
+// 6. OS banner appears in the corner of your screen
+
+// NOTE: content.js only runs on student.iclicker.com (per manifest.json).
+// On this test page you won't see the full pipeline — but you can test
+// background.js directly from the service worker console on chrome://extensions.
+  </pre>
+
+  <script>
+    function simulatePollStart() {
+      document.getElementById('fake-poll').style.display = 'block';
+      document.getElementById('status').textContent = '🟢 Poll element added to DOM';
+      document.getElementById('status').style.color = 'green';
+    }
+
+    function simulatePollEnd() {
+      document.getElementById('fake-poll').style.display = 'none';
+      document.getElementById('status').textContent = '🔴 Poll element removed from DOM';
+      document.getElementById('status').style.color = 'red';
+    }
+  </script>
+</body>
+</html>
