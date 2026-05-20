@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "notif",
+  "version": "0.1.0",
+  "description": "Desktop notifications for iClicker and TopHat poll questions",
+
+  "content_scripts": [
+    {
+      "matches": ["https://student.iclicker.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "icons": {
+    "128": "icons/icon128.png"
+  }
+}
