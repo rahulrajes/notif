@@ -1,0 +1,11 @@
+# Mac clutter
+.DS_Store
+
+# VS Code settings (optional — remove this line if you want to share your editor config)
+.vscode/
+
+# Node modules if you ever add a build step
+node_modules/
+
+# Environment files — never commit secrets
+.env
