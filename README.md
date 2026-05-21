@@ -31,7 +31,11 @@ Plain JavaScript, Manifest V3, no build step required.
 
 
 ## RAHUL TESTING (run these on chrome console)
+
 chrome.tabs.query({ url: 'https://student.iclicker.com/*' }, t => chrome.tabs.sendMessage(t[0].id, { type: 'PLAY_SOUND' }))
+
 chrome.storage.local.clear()
+
 chrome.storage.local.set({ pollActive: true, currentFriend: 'rishi.png' })
+
 chrome.notifications.create('test', { type: 'basic', iconUrl: 'icons/icon128.png', title: '🔔 Poll question is live!', message: 'iClicker — switch to the tab and answer now.', priority: 2 });
