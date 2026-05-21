@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<!--
+  offscreen.html — a hidden extension page that exists solely to play audio.
+  Service workers can't play sound. Content scripts are blocked by iClicker's CSP.
+  Offscreen documents run in the extension's own context — no CSP restrictions.
+-->
+<script src="offscreen.js"></script>

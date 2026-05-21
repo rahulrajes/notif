@@ -7,7 +7,7 @@
   "permissions": [
     "notifications",
     "storage",
-    "tabs"
+    "offscreen"
   ],
 
   "background": {

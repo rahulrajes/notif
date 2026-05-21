@@ -1,18 +1,16 @@
 // background.js — service worker
 
-chrome.runtime.onMessage.addListener(function (message, sender) {
+chrome.runtime.onMessage.addListener(function (message) {
 
   if (message.type === 'POLL_STARTED') {
 
-    // Pick a random friend image, then do everything else
     pickRandomFriend(function (friendFilename) {
 
       chrome.storage.local.set({
         pollActive: true,
-        currentFriend: friendFilename,  // null if no friends added yet
+        currentFriend: friendFilename,
       });
 
-      // LIVE badge on the toolbar icon
       chrome.action.setBadgeText({ text: 'LIVE' });
       chrome.action.setBadgeBackgroundColor({ color: '#cc3300' });
 
@@ -30,8 +28,8 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
             });
           }
 
-          if (settings.soundEnabled && sender.tab) {
-            chrome.tabs.sendMessage(sender.tab.id, { type: 'PLAY_SOUND' });
+          if (settings.soundEnabled) {
+            playSound();
           }
         }
       );
@@ -44,22 +42,34 @@ chrome.runtime.onMessage.addListener(function (message, sender) {
   }
 });
 
-// ── Pick a random filename from assets/friends.json ──
-// Uses fetch() to read the JSON file bundled with the extension.
-// Returns null if the list is empty (user hasn't added photos yet).
+// ── Play sound via offscreen document ──
+// Service workers have no audio API.
+// iClicker's CSP blocks audio in content scripts.
+// Offscreen documents run in the extension's context — no restrictions.
+async function playSound() {
+  // Only one offscreen document can exist at a time — check first
+  const existing = await chrome.runtime.getContexts({
+    contextTypes: ['OFFSCREEN_DOCUMENT'],
+  });
+
+  if (existing.length === 0) {
+    await chrome.offscreen.createDocument({
+      url:           'offscreen.html',
+      reasons:       ['AUDIO_PLAYBACK'],
+      justification: 'Play alert beep when a poll question goes live',
+    });
+  }
+
+  chrome.runtime.sendMessage({ type: 'PLAY_SOUND_OFFSCREEN' });
+}
+
+// ── Pick a random friend image ──
 function pickRandomFriend(callback) {
   fetch(chrome.runtime.getURL('assets/friends.json'))
     .then(function (r) { return r.json(); })
     .then(function (data) {
       const list = data.friends || [];
-      if (list.length === 0) {
-        callback(null);
-      } else {
-        const pick = list[Math.floor(Math.random() * list.length)];
-        callback(pick);
-      }
+      callback(list.length === 0 ? null : list[Math.floor(Math.random() * list.length)]);
     })
-    .catch(function () {
-      callback(null); // if anything goes wrong, just skip the image
-    });
+    .catch(function () { callback(null); });
 }

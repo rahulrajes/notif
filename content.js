@@ -55,33 +55,6 @@
     }
   }
 
-  // ── Sound playback (triggered by background.js message) ──
-  chrome.runtime.onMessage.addListener(function (message) {
-    if (message.type === 'PLAY_SOUND') playAlert();
-  });
-
-  function playAlert() {
-    try {
-      const ctx = new AudioContext();
-      // Browsers suspend AudioContext until a user gesture has occurred on the page.
-      // ctx.resume() lifts that suspension so we can play even from a background tab.
-      ctx.resume().then(function () {
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.6);
-      });
-    } catch (e) {
-      console.warn('[notif] Could not play sound:', e);
-    }
-  }
-
   // ── Observer ──
   const observer = new MutationObserver(onDomChange);
   observer.observe(document.body, { childList: true, subtree: true });
