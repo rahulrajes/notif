@@ -1,15 +1,22 @@
 {
   "manifest_version": 3,
   "name": "notif",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Desktop notifications for iClicker and TopHat poll questions",
 
   "permissions": [
-    "notifications"
+    "notifications",
+    "storage",
+    "tabs"
   ],
 
   "background": {
     "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "notif"
   },
 
   "content_scripts": [

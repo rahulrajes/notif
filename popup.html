@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+  popup.html — the UI that appears when you click the extension icon in Chrome's toolbar.
+  Chrome renders this in a small window (max ~800px wide, but we keep it narrow).
+  It can't directly touch the page DOM, but it talks to background.js via messages.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>notif</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <div class="header">
+    <span class="logo">🔔 notif</span>
+    <span id="status-badge" class="badge badge--idle">idle</span>
+  </div>
+
+  <div class="section">
+    <div class="row">
+      <div class="row__label">
+        <span class="row__title">Notifications</span>
+        <span class="row__sub">Desktop banner when a poll starts</span>
+      </div>
+      <label class="toggle" aria-label="Toggle notifications">
+        <input type="checkbox" id="toggle-notifications" checked>
+        <span class="toggle__slider"></span>
+      </label>
+    </div>
+
+    <div class="row">
+      <div class="row__label">
+        <span class="row__title">Sound</span>
+        <span class="row__sub">Audio alert when a poll starts</span>
+      </div>
+      <label class="toggle" aria-label="Toggle sound">
+        <input type="checkbox" id="toggle-sound" checked>
+        <span class="toggle__slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="footer">
+    Watching <strong>iClicker</strong> · notif v0.3.0
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
