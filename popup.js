@@ -62,13 +62,25 @@
     }
   );
 
+  // Images where we want to see the whole thing (contain) vs just the face (cover).
+  // contain = shrink to fit the box, no cropping — good for body shots or close faces
+  // cover  = fill the box and crop overflow — good for centered portrait shots
+  const CONTAIN_IMAGES = new Set([
+    'rishi.png',    // body shot — want to see the whole thing
+    'arjun.png',    // very close face — cover clips the top of his head
+    'aarush.png',   // tall portrait — cover clips face
+    'sriram.png',   // tall portrait — cover clips face
+    'swanuja.png',  // portrait — cover clips face
+  ]);
+
   // ── Poll screen: load friend image ──
   function showPollScreen(filename) {
     showScreen('poll');
     const img = document.getElementById('friend-img');
+    img.style.objectFit      = CONTAIN_IMAGES.has(filename) ? 'contain' : 'cover';
+    img.style.objectPosition = CONTAIN_IMAGES.has(filename) ? 'center center' : 'center top';
     img.src = chrome.runtime.getURL('assets/friends/' + filename);
     img.onerror = function () {
-      // If the image fails to load, show a text fallback
       img.parentElement.innerHTML =
         '<p class="poll__no-friends">📸 (add photos to assets/friends/ to see your friends here)</p>';
     };
