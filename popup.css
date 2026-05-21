@@ -1,20 +1,145 @@
-/* popup.css — styles for the extension popup */
+/* popup.css */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  width: 280px;
+  width: 300px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
   background: #1a1a1a;
   color: #f0f0f0;
 }
 
-/* --- Header --- */
+.screen { display: flex; flex-direction: column; }
+[hidden] { display: none !important; }
+
+/* ── Buttons ── */
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+
+.btn--primary {
+  background: #1e64dc;
+  color: white;
+  margin: 16px;
+}
+
+.btn--continue {
+  background: #cc3300;
+  color: white;
+  margin: 0 16px 16px;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.link-btn:hover { color: #888; }
+
+/* ══════════════════════════════════
+   SCREEN 1 — Onboarding
+══════════════════════════════════ */
+.onboard__icon {
+  font-size: 40px;
+  text-align: center;
+  padding: 24px 0 8px;
+}
+.onboard__title {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  padding-bottom: 10px;
+}
+.onboard__body {
+  color: #aaa;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 0 16px 12px;
+  text-align: center;
+}
+.onboard__body strong { color: #f0f0f0; }
+.onboard__steps {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 2;
+  padding: 0 24px 8px 36px;
+}
+.onboard__steps strong { color: #fff; }
+
+/* ══════════════════════════════════
+   SCREEN 2 — Platform picker
+══════════════════════════════════ */
+.platform__heading {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  padding: 20px 16px 12px;
+}
+
+.platform-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: calc(100% - 32px);
+  margin: 0 16px 10px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: #242424;
+  color: #f0f0f0;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: left;
+}
+.platform-card:last-child { margin-bottom: 20px; }
+.platform-card:hover { background: #2e2e2e; }
+
+.platform-card--asu:hover { border-color: #8C1D40; }
+.platform-card--uofa:hover { border-color: #003366; }
+
+.platform-card__badge {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.platform-card__badge--asu {
+  background: #8C1D40;
+  color: #FFC627;
+}
+.platform-card__badge--uofa {
+  background: #003366;
+  color: #CC0033;
+}
+
+.platform-card__name {
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+}
+.platform-card__url {
+  font-size: 11px;
+  color: #666;
+}
+
+/* ══════════════════════════════════
+   SCREEN 3 — Main / settings
+══════════════════════════════════ */
 .header {
   display: flex;
   align-items: center;
@@ -22,13 +147,8 @@ body {
   padding: 16px;
   border-bottom: 1px solid #2e2e2e;
 }
+.logo { font-size: 16px; font-weight: 600; }
 
-.logo {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-/* Status badge — changes between "idle" and "LIVE" */
 .badge {
   font-size: 11px;
   font-weight: 700;
@@ -37,55 +157,29 @@ body {
   border-radius: 99px;
   text-transform: uppercase;
 }
-
-.badge--idle {
-  background: #2e2e2e;
-  color: #888;
-}
-
+.badge--idle { background: #2e2e2e; color: #888; }
 .badge--live {
   background: #1a4a1a;
   color: #4cff4c;
   animation: pulse 1.5s infinite;
 }
-
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.6; }
 }
 
-/* --- Settings rows --- */
-.section {
-  padding: 8px 0;
-}
-
+.section { padding: 8px 0; }
 .row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
 }
+.row:hover { background: #222; }
+.row__label { display: flex; flex-direction: column; gap: 2px; }
+.row__title { font-weight: 500; }
+.row__sub { font-size: 12px; color: #888; }
 
-.row:hover {
-  background: #222;
-}
-
-.row__label {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.row__title {
-  font-weight: 500;
-}
-
-.row__sub {
-  font-size: 12px;
-  color: #888;
-}
-
-/* --- Toggle switch --- */
 .toggle {
   position: relative;
   display: inline-block;
@@ -94,13 +188,7 @@ body {
   flex-shrink: 0;
   cursor: pointer;
 }
-
-.toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
+.toggle input { opacity: 0; width: 0; height: 0; }
 .toggle__slider {
   position: absolute;
   inset: 0;
@@ -108,38 +196,65 @@ body {
   border-radius: 22px;
   transition: background 0.2s;
 }
-
 .toggle__slider::before {
   content: '';
   position: absolute;
-  width: 16px;
-  height: 16px;
-  left: 3px;
-  top: 3px;
+  width: 16px; height: 16px;
+  left: 3px; top: 3px;
   background: white;
   border-radius: 50%;
   transition: transform 0.2s;
 }
-
-.toggle input:checked + .toggle__slider {
-  background: #1e64dc;
-}
-
-.toggle input:checked + .toggle__slider::before {
-  transform: translateX(18px);
-}
-
-/* Keyboard focus ring — accessibility */
+.toggle input:checked + .toggle__slider { background: #1e64dc; }
+.toggle input:checked + .toggle__slider::before { transform: translateX(18px); }
 .toggle input:focus-visible + .toggle__slider {
   outline: 2px solid #1e64dc;
   outline-offset: 2px;
 }
 
-/* --- Footer --- */
 .footer {
   padding: 12px 16px;
   font-size: 12px;
   color: #555;
   border-top: 1px solid #2e2e2e;
   text-align: center;
+  line-height: 2;
+}
+
+/* ══════════════════════════════════
+   SCREEN 4 — Poll active / friend face
+══════════════════════════════════ */
+.poll__alert {
+  background: #cc3300;
+  color: white;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  padding: 10px;
+  animation: pulse 0.8s infinite;
+}
+
+.poll__face-wrap {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.poll__face {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top; /* favour faces over bodies */
+}
+
+.poll__no-friends {
+  color: #555;
+  font-size: 13px;
+  text-align: center;
+  padding: 40px 16px;
 }

@@ -1,46 +1,65 @@
 // background.js — service worker
-// Receives messages from content.js, checks user settings, fires notifications.
 
 chrome.runtime.onMessage.addListener(function (message, sender) {
 
   if (message.type === 'POLL_STARTED') {
 
-    // Mark poll as active in storage — popup reads this to show the LIVE badge
-    chrome.storage.local.set({ pollActive: true });
+    // Pick a random friend image, then do everything else
+    pickRandomFriend(function (friendFilename) {
 
-    // Set the "LIVE" text badge on the toolbar icon
-    chrome.action.setBadgeText({ text: 'LIVE' });
-    chrome.action.setBadgeBackgroundColor({ color: '#1a7a1a' });
+      chrome.storage.local.set({
+        pollActive: true,
+        currentFriend: friendFilename,  // null if no friends added yet
+      });
 
-    // Read user settings before doing anything
-    chrome.storage.local.get(
-      { notificationsEnabled: true, soundEnabled: true },
-      function (settings) {
+      // LIVE badge on the toolbar icon
+      chrome.action.setBadgeText({ text: 'LIVE' });
+      chrome.action.setBadgeBackgroundColor({ color: '#cc3300' });
 
-        if (settings.notificationsEnabled) {
-          chrome.notifications.create('poll-active', {
-            type: 'basic',
-            iconUrl: 'icons/icon128.png',
-            title: '🔔 Poll question is live!',
-            message: message.platform + ' — switch to the tab and answer now.',
-            priority: 2,
-          });
+      chrome.storage.local.get(
+        { notificationsEnabled: true, soundEnabled: true },
+        function (settings) {
+
+          if (settings.notificationsEnabled) {
+            chrome.notifications.create('poll-active', {
+              type:     'basic',
+              iconUrl:  'icons/icon128.png',
+              title:    '🔔 Poll question is live!',
+              message:  message.platform + ' — click the notif icon and answer now.',
+              priority: 2,
+            });
+          }
+
+          if (settings.soundEnabled && sender.tab) {
+            chrome.tabs.sendMessage(sender.tab.id, { type: 'PLAY_SOUND' });
+          }
         }
-
-        // Sound is played by the content script (not here) because
-        // service workers can't use the Web Audio API.
-        // We send a message back to the tab that reported the poll.
-        if (settings.soundEnabled && sender.tab) {
-          chrome.tabs.sendMessage(sender.tab.id, { type: 'PLAY_SOUND' });
-        }
-      }
-    );
+      );
+    });
   }
 
   if (message.type === 'POLL_ENDED') {
-    chrome.storage.local.set({ pollActive: false });
-
-    // Clear the badge
+    chrome.storage.local.set({ pollActive: false, currentFriend: null });
     chrome.action.setBadgeText({ text: '' });
   }
 });
+
+// ── Pick a random filename from assets/friends.json ──
+// Uses fetch() to read the JSON file bundled with the extension.
+// Returns null if the list is empty (user hasn't added photos yet).
+function pickRandomFriend(callback) {
+  fetch(chrome.runtime.getURL('assets/friends.json'))
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      const list = data.friends || [];
+      if (list.length === 0) {
+        callback(null);
+      } else {
+        const pick = list[Math.floor(Math.random() * list.length)];
+        callback(pick);
+      }
+    })
+    .catch(function () {
+      callback(null); // if anything goes wrong, just skip the image
+    });
+}
