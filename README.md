@@ -23,7 +23,7 @@ This extension **notifies only**. It does not answer questions for you. Auto-ans
 ## Supported platforms
 
 - [x] iClicker (`student.iclicker.com`)
-- [ ] TopHat (`app.tophat.com`) — coming in a later phase
+- [x] TopHat (`app.tophat.com`) — coming in a later phase
 
 ## Tech
 
