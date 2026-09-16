@@ -10,14 +10,17 @@
   const PLATFORM = hostname.includes('iclicker') ? 'iClicker' : 'TopHat';
 
   // ── Platform-specific selectors ──
-  // These are best guesses. Confirm with DevTools during a live class.
-  // Right-click the poll element → Inspect → copy a unique attribute or class.
+  // iClicker: CONFIRMED from a live poll DOM (Sep 2026). iClicker is an Angular
+  //   app; a live poll mounts an <app-poll> custom element that wraps the whole
+  //   question. Custom-element tag names are stable across builds (unlike the
+  //   hashed _ngcontent/_nghost attributes), so <app-poll> is the primary signal.
+  // TopHat: still unconfirmed guesses — confirm against a live TopHat poll.
   const SELECTORS = {
     iClicker: [
-      '[data-testid="active-question"]',
-      '[class*="ActiveQuestion"]',
-      '[class*="active-question"]',
-      '[class*="polling"][class*="open"]',
+      'app-poll',                     // primary — the whole poll component
+      'app-multiple-choice-question', // question body (per-type app-*-question)
+      '.answer-controls-container',   // the answer buttons
+      '.question-type-container',     // question container
     ],
     TopHat: [
       '[data-test-id="question-card"]',
