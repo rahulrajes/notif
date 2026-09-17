@@ -66,11 +66,8 @@
   // contain = shrink to fit the box, no cropping — good for body shots or close faces
   // cover  = fill the box and crop overflow — good for centered portrait shots
   const CONTAIN_IMAGES = new Set([
-    'rishi.png',    // body shot — want to see the whole thing
-    'arjun.png',    // very close face — cover clips the top of his head
-    'aarush.png',   // tall portrait — cover clips face
-    'sriram.png',   // tall portrait — cover clips face
-    'swanuja.png',  // portrait — cover clips face
+    // Add a filename here if 'cover' crops that photo badly — it'll use
+    // 'contain' (shrink-to-fit, no cropping) instead. Empty = all use 'cover'.
   ]);
 
   // ── Poll screen: load friend image ──
@@ -105,12 +102,10 @@
     });
   });
 
-  // Platform picker → TopHat
+  // Platform picker → TopHat (not supported yet — show a "coming soon" note
+  // instead of selecting it, so TopHat users aren't left with a silent no-op)
   document.getElementById('btn-pick-tophat').addEventListener('click', function () {
-    chrome.storage.local.set({ platform: 'TopHat' }, function () {
-      document.getElementById('footer-platform').textContent = 'Watching TopHat';
-      showScreen('main');
-    });
+    document.getElementById('tophat-note').hidden = false;
   });
 
   // Main → switch platform

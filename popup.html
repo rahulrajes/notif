@@ -42,11 +42,13 @@
       <span class="platform-card__url">student.iclicker.com</span>
     </button>
 
-    <button id="btn-pick-tophat" class="platform-card platform-card--uofa">
+    <button id="btn-pick-tophat" class="platform-card platform-card--uofa platform-card--soon">
       <span class="platform-card__badge platform-card__badge--uofa">UA</span>
       <span class="platform-card__name">TopHat</span>
-      <span class="platform-card__url">app.tophat.com</span>
+      <span class="platform-card__url">Coming soon!</span>
     </button>
+
+    <p id="tophat-note" class="platform__note" hidden>🚧 TopHat support is coming soon — pick iClicker for now.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════
@@ -82,6 +84,8 @@
       </div>
     </div>
 
+    <p class="tip">📌 Pin your iClicker tab (right-click the tab → Pin) so Chrome keeps watching it in the background.</p>
+
     <div class="footer">
       <span id="footer-platform">Watching iClicker</span> · notif v0.4.0
       <br>
@@ -95,7 +99,7 @@
   <div id="screen-poll" class="screen" hidden>
     <div class="poll__alert">🔔 POLL IS LIVE</div>
     <div class="poll__face-wrap">
-      <img id="friend-img" class="poll__face" src="" alt="your friend judging you">
+      <img id="friend-img" class="poll__face" src="" alt="">
     </div>
     <button id="btn-continue" class="btn btn--continue">
       done answering?

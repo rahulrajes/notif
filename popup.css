@@ -137,6 +137,17 @@ body {
   color: #666;
 }
 
+/* TopHat — not supported yet */
+.platform-card--soon { opacity: 0.5; cursor: default; }
+.platform-card--soon:hover { background: #242424; border-color: transparent; }
+.platform-card--soon .platform-card__url { color: #CC0033; font-weight: 700; }
+.platform__note {
+  font-size: 12px;
+  color: #CC0033;
+  text-align: center;
+  padding: 0 16px 18px;
+}
+
 /* ══════════════════════════════════
    SCREEN 3 — Main / settings
 ══════════════════════════════════ */
@@ -166,6 +177,14 @@ body {
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.6; }
+}
+
+.tip {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.5;
+  padding: 4px 16px 12px;
+  text-align: center;
 }
 
 .section { padding: 8px 0; }
