@@ -120,6 +120,12 @@
     showScreen('main');
   });
 
+  // Open the reviewer/dev demo page. Using getURL guarantees it opens as an
+  // extension page (chrome-extension://…/test.html) so chrome.runtime works there.
+  document.getElementById('btn-open-demo').addEventListener('click', function () {
+    chrome.tabs.create({ url: chrome.runtime.getURL('test.html') });
+  });
+
   // ══════════════════════════════════
   // Toggle persistence
   // ══════════════════════════════════
