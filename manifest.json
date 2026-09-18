@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "notif",
   "version": "0.4.0",
-  "description": "Desktop notifications for iClicker and TopHat poll questions",
+  "description": "Desktop notifications for iClicker poll questions",
 
   "permissions": [
     "notifications",
@@ -22,8 +22,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://student.iclicker.com/*",
-        "https://app.tophat.com/*"
+        "https://student.iclicker.com/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
