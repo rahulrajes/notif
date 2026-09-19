@@ -1,5 +1,8 @@
 # notif
 
+Try it out!! (only works if you're a student enrolled in iClicker or TopHat):
+https://chromewebstore.google.com/detail/gjhgkgehckbejnibbblcijoibhgdagle?utm_source=item-share-cb
+
 A Chrome extension that notifies you when a new poll question appears on iClicker or TopHat — so you never miss participation points.
 
 ## What this does
@@ -28,14 +31,3 @@ This extension **notifies only**. It does not answer questions for you. Auto-ans
 ## Tech
 
 Plain JavaScript, Manifest V3, no build step required.
-
-
-## RAHUL TESTING (run these on chrome console)
-
-chrome.tabs.query({ url: 'https://student.iclicker.com/*' }, t => chrome.tabs.sendMessage(t[0].id, { type: 'PLAY_SOUND' }))
-
-chrome.storage.local.clear()
-
-chrome.storage.local.set({ pollActive: true, currentFriend: 'rishi.png' })
-
-chrome.notifications.create('test', { type: 'basic', iconUrl: 'icons/icon128.png', title: '🔔 Poll question is live!', message: 'iClicker — switch to the tab and answer now.', priority: 2 });
