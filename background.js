@@ -4,40 +4,34 @@ chrome.runtime.onMessage.addListener(function (message) {
 
   if (message.type === 'POLL_STARTED') {
 
-    pickRandomFriend(function (friendFilename) {
+    chrome.storage.local.set({ pollActive: true });
 
-      chrome.storage.local.set({
-        pollActive: true,
-        currentFriend: friendFilename,
-      });
+    chrome.action.setBadgeText({ text: 'LIVE' });
+    chrome.action.setBadgeBackgroundColor({ color: '#cc3300' });
 
-      chrome.action.setBadgeText({ text: 'LIVE' });
-      chrome.action.setBadgeBackgroundColor({ color: '#cc3300' });
+    chrome.storage.local.get(
+      { notificationsEnabled: true, soundEnabled: true },
+      function (settings) {
 
-      chrome.storage.local.get(
-        { notificationsEnabled: true, soundEnabled: true },
-        function (settings) {
-
-          if (settings.notificationsEnabled) {
-            chrome.notifications.create('poll-active', {
-              type:     'basic',
-              iconUrl:  'icons/icon128.png',
-              title:    '🔔 Poll question is live!',
-              message:  message.platform + ' — click the notif icon and answer now.',
-              priority: 2,
-            });
-          }
-
-          if (settings.soundEnabled) {
-            playSound();
-          }
+        if (settings.notificationsEnabled) {
+          chrome.notifications.create('poll-active', {
+            type:     'basic',
+            iconUrl:  'icons/icon128.png',
+            title:    '🔔 Poll question is live!',
+            message:  message.platform + ' — switch to the tab and answer now.',
+            priority: 2,
+          });
         }
-      );
-    });
+
+        if (settings.soundEnabled) {
+          playSound();
+        }
+      }
+    );
   }
 
   if (message.type === 'POLL_ENDED') {
-    chrome.storage.local.set({ pollActive: false, currentFriend: null });
+    chrome.storage.local.set({ pollActive: false });
     chrome.action.setBadgeText({ text: '' });
   }
 });
@@ -61,15 +55,4 @@ async function playSound() {
   }
 
   chrome.runtime.sendMessage({ type: 'PLAY_SOUND_OFFSCREEN' });
-}
-
-// ── Pick a random friend image ──
-function pickRandomFriend(callback) {
-  fetch(chrome.runtime.getURL('assets/friends.json'))
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      const list = data.friends || [];
-      callback(list.length === 0 ? null : list[Math.floor(Math.random() * list.length)]);
-    })
-    .catch(function () { callback(null); });
 }
