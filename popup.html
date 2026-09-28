@@ -8,30 +8,34 @@
 <body>
 
   <!-- ═══════════════════════════════════════════
-       SCREEN 1: Onboarding (shown once, first open)
-       Tells the user to enable Chrome notifications in macOS
+       SCREEN 1: Onboarding — enable macOS notifications
   ════════════════════════════════════════════ -->
   <div id="screen-onboarding" class="screen">
     <div class="onboard__icon">🔔</div>
-    <h2 class="onboard__title">One quick thing</h2>
+    <h2 class="onboard__title">First, turn on notifications</h2>
     <p class="onboard__body">
-      notif fires <strong>desktop banners</strong> when a poll goes live.
-      For that to work, macOS needs to allow Chrome to send notifications.
+      notif alerts you with a <strong>desktop banner</strong> the second a poll goes live.
+      This <strong>only works if macOS is set to allow Chrome notifications.</strong>
     </p>
-    <ol class="onboard__steps">
-      <li>Open <strong>System Settings</strong></li>
-      <li>Go to <strong>Notifications</strong></li>
-      <li>Find <strong>Google Chrome</strong></li>
-      <li>Set to <strong>Banners</strong> or <strong>Alerts</strong></li>
-    </ol>
+
+    <div class="steps-card">
+      <div class="steps-card__head">Enable it in macOS now</div>
+      <ol class="steps">
+        <li>Open <strong>System Settings</strong></li>
+        <li>Click <strong>Notifications</strong></li>
+        <li>Select <strong>Google Chrome</strong></li>
+        <li>Turn <strong>Allow notifications</strong> ON</li>
+        <li>Set the style to <strong>Alerts</strong> (stays on screen)</li>
+      </ol>
+    </div>
+
     <button id="btn-onboarding-done" class="btn btn--primary">
-      Done, let's go →
+      Done — I've enabled them →
     </button>
   </div>
 
   <!-- ═══════════════════════════════════════════
        SCREEN 2: Platform picker
-       Choose iClicker (ASU) or TopHat (U of A)
   ════════════════════════════════════════════ -->
   <div id="screen-platform" class="screen" hidden>
     <p class="platform__heading">Which platform is your class using?</p>
@@ -52,12 +56,23 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
-       SCREEN 3: Main settings (normal idle state)
+       SCREEN 3: Main settings
   ════════════════════════════════════════════ -->
   <div id="screen-main" class="screen" hidden>
     <div class="header">
       <span class="logo">🔔 notif</span>
       <span id="status-badge" class="badge badge--idle">idle</span>
+    </div>
+
+    <!-- Persistent macOS-notifications requirement (dismissible) -->
+    <div class="notice" id="mac-notice">
+      <button id="btn-dismiss-notice" class="notice__dismiss" title="Got it — hide this" aria-label="Dismiss reminder">✓</button>
+      <div class="notice__title">⚠️ macOS must allow Chrome notifications</div>
+      <div class="notice__body">
+        <strong>System Settings → Notifications → Google Chrome → Allow</strong>
+        (style: <strong>Alerts</strong>). Without this, no banner will appear.
+      </div>
+      <button id="btn-test-notif" class="notice__btn">Send a test notification</button>
     </div>
 
     <div class="section">
@@ -87,7 +102,7 @@
     <p class="tip">📌 Pin your iClicker tab (right-click the tab → Pin) so Chrome keeps watching it in the background.</p>
 
     <div class="footer">
-      <span id="footer-platform">Watching iClicker</span> · notif v0.4.0
+      <span id="footer-platform">Watching iClicker</span> · notif v0.5.0
       <br>
       <button id="btn-switch-platform" class="link-btn">switch platform</button>
       &nbsp;·&nbsp;
@@ -96,16 +111,15 @@
   </div>
 
   <!-- ═══════════════════════════════════════════
-       SCREEN 4: Poll active — random friend face
+       SCREEN 4: Poll active
   ════════════════════════════════════════════ -->
   <div id="screen-poll" class="screen" hidden>
-    <div class="poll__alert">🔔 POLL IS LIVE</div>
-    <div class="poll__face-wrap">
-      <img id="friend-img" class="poll__face" src="" alt="">
+    <div class="poll">
+      <div class="poll__ring">🔔</div>
+      <div class="poll__title">Poll is live!</div>
+      <p class="poll__sub">Switch to your <span id="poll-platform">iClicker</span> tab and answer now.</p>
     </div>
-    <button id="btn-continue" class="btn btn--continue">
-      done answering?
-    </button>
+    <button id="btn-continue" class="btn btn--continue">Got it →</button>
   </div>
 
   <script src="popup.js"></script>

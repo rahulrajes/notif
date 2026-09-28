@@ -18,7 +18,7 @@
     });
   }
 
-  // ── Read all settings on open, decide which screen to show ──
+  // ── Read settings on open, decide which screen to show ──
   chrome.storage.local.get(
     {
       onboardingComplete: false,
@@ -26,61 +26,32 @@
       notificationsEnabled: true,
       soundEnabled: true,
       pollActive: false,
-      currentFriend: null,     // filename of the selected friend image
+      macNoticeDismissed: false,   // hide the macOS-notifications reminder once acknowledged
     },
     function (s) {
 
-      if (!s.onboardingComplete) {
-        showScreen('onboarding');
-        return;
-      }
+      if (!s.onboardingComplete) { showScreen('onboarding'); return; }
+      if (!s.platform)           { showScreen('platform');   return; }
 
-      if (!s.platform) {
-        showScreen('platform');
-        return;
-      }
-
-      // Update footer platform label
       document.getElementById('footer-platform').textContent = 'Watching ' + s.platform;
 
-      // If a poll is active and we have a friend to show → poll screen
-      if (s.pollActive && s.currentFriend) {
-        showPollScreen(s.currentFriend);
-        return;
-      }
+      // If a poll is active → poll screen
+      if (s.pollActive) { showPollScreen(s.platform); return; }
 
-      // Otherwise → normal settings screen
+      // Otherwise → settings
       showScreen('main');
       document.getElementById('toggle-notifications').checked = s.notificationsEnabled;
       document.getElementById('toggle-sound').checked         = s.soundEnabled;
-
-      if (s.pollActive) {
-        const badge = document.getElementById('status-badge');
-        badge.textContent = 'LIVE';
-        badge.className   = 'badge badge--live';
+      if (s.macNoticeDismissed) {
+        document.getElementById('mac-notice').hidden = true;
       }
     }
   );
 
-  // Images where we want to see the whole thing (contain) vs just the face (cover).
-  // contain = shrink to fit the box, no cropping — good for body shots or close faces
-  // cover  = fill the box and crop overflow — good for centered portrait shots
-  const CONTAIN_IMAGES = new Set([
-    // Add a filename here if 'cover' crops that photo badly — it'll use
-    // 'contain' (shrink-to-fit, no cropping) instead. Empty = all use 'cover'.
-  ]);
-
-  // ── Poll screen: load friend image ──
-  function showPollScreen(filename) {
+  // ── Poll screen ──
+  function showPollScreen(platform) {
     showScreen('poll');
-    const img = document.getElementById('friend-img');
-    img.style.objectFit      = CONTAIN_IMAGES.has(filename) ? 'contain' : 'cover';
-    img.style.objectPosition = CONTAIN_IMAGES.has(filename) ? 'center center' : 'center top';
-    img.src = chrome.runtime.getURL('assets/friends/' + filename);
-    img.onerror = function () {
-      img.parentElement.innerHTML =
-        '<p class="poll__no-friends">📸 (add photos to assets/friends/ to see your friends here)</p>';
-    };
+    document.getElementById('poll-platform').textContent = platform || 'your class';
   }
 
   // ══════════════════════════════════
@@ -124,6 +95,24 @@
   // extension page (chrome-extension://…/test.html) so chrome.runtime works there.
   document.getElementById('btn-open-demo').addEventListener('click', function () {
     chrome.tabs.create({ url: chrome.runtime.getURL('test.html') });
+  });
+
+  // Dismiss the macOS-notifications reminder and remember it stays hidden.
+  document.getElementById('btn-dismiss-notice').addEventListener('click', function () {
+    chrome.storage.local.set({ macNoticeDismissed: true });
+    document.getElementById('mac-notice').hidden = true;
+  });
+
+  // Test notification — lets the user confirm their macOS Chrome-notification
+  // setting is actually on. If no banner appears, the OS is blocking Chrome.
+  document.getElementById('btn-test-notif').addEventListener('click', function () {
+    chrome.notifications.create('notif-test', {
+      type:     'basic',
+      iconUrl:  'icons/icon128.png',
+      title:    '✅ Notifications are on!',
+      message:  "If you can see this banner, you're all set for live polls.",
+      priority: 2,
+    });
   });
 
   // ══════════════════════════════════
